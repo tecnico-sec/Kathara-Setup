@@ -6,34 +6,107 @@ Instituto Superior T?cnico, Universidade de Lisboa
 
 ## Objectivo
 
-O objectivo deste guia é apresentar o Kathará, instalar e testar o funcionamento básico.
+O objectivo deste guia é apresentar o Kathará, instala e testar o funcionamento básico.
 
 ## O que é o Kathará
 
-(TODO texto breve de enquadramento)
+O kathara e uma framework que permite simular redes de computadores e que sera a base dos laboratorios e do projeto desta cadeira. Vamos utilizar o kathara para simular cenarios de rede facilmente reproduziveis e observar as consequencias de determinadas escolhas de protocolos e configuracoes.
+
+Em poucas palavras o kathara permite facilmente criar varias maquinas - que sao concretizadas por containers de docker - e escolher como estao ligadas em collision domains (pontos em que os pacotes chegam a todos os pcs) - que sao concretizados por docker bridge networks.
+
+Este video inclui uma explicacao do kathara:
 
 https://www.youtube.com/watch?v=ionEpKjv3Vk
 
 
 ## Instalação do Kathará
 
-O Kathará já está instalado nos PCs do laboratório, em Ubuntu GNU/Linux.
-Para aceder aos PCs do laboratório deverá usar o *username* "seed" e a *password* "dees".
+O Kathará está instalado nos PCs do laboratório, em Ubuntu GNU/Linux.
+Para aceder aos PCs do laboratório use o *username* "seed" e a *password* "dees".
 
-Caso pretenda instalar o Kathará no seu PC, pode corrê-lo directamente sobre uma distribuição GNU/Linux ou através de uma máquina virtual com o mesmo sistema operativo. 
-É necessário ter em conta que o Kathará lança vários contentores (semelhantes a máquinas virtuais leves) pelo que se o correr dentro de uma máquina virtual, deve garantir que esta tem memória suficiente.
-
-Para instalar o Kathará deve fazer o *download* da versa~o *"Latest Stable Release"* de
+Para instalar o Kathará no seu PC, faca o *download* da versao *"Latest Stable Release"* de
 
 > <https://www.kathara.org/#download>
 
-e seguir os passos indicados em
+e siga os passos indicados em
 
 > https://github.com/KatharaFramework/Kathara/wiki
 
 ## Teste básico
 
-(TODO)
+O objetivo deste teste basico e verificar que o kathara corretamente instalado.
+Vamos criar uma rede em que temos 2 pc's fisicamente ligados ao mesmo switch e confirmar que se conseguem pingar mutuamente.
+
+1. Clone este repositorio git para a sua maquina
+
+```bash
+git clone 'git@github.com:tecnico-sec/Kathara-Route.git'
+````
+
+2.  Observe o conteúdo do ficheiro *lab.conf* de modo a compreender porque é gerada a rede entre os 2 pcs.
+
+3.  Execute o laboratório mudando para a directoria que contém o ficheiro *lab.conf* e executando o comando `lstart` (`kathara lstart`). 
+Observe o arranque dos dois docker containers.
+Verifique que os scripts bash pc1.startup e pc2.startup sao executado apos o arranque das respetivas maquinas.
+
+4.  Em cada maquina, obtenha o seu endereco ip dentro da rede 1.2.0.0/24.
+
+```bash
+ip addr
+```
+
+| Maquina  | ip addr       |
+| -------- | ------------- |
+| pc1      |               |
+| pc2      |               |
+
+
+5. Pingue as maquinas mutuamente.
+
+```bash
+# iex: no pc1
+ping 1.2.0.2
+# ctrl+c para parar o comando 
+```
+
+6. Feche o laboratorio, executando  ocomando `lclean`. 
+Isto vai apagar o conteudo das maquinas e parar de corre-las.
+
+# Guardar e observer o trafico entre maquinas
+Vamos agora proceder a guardar o trafico de um ping entre maquinas do ponto de vista dos pacotes que chegam a interface de rede de cada maquina e posteriormente observa-lo no host pc.
+
+1. Na pasta onde esta o ficheiro lab.conf, a pasta shared e uma pasta persistente partilhada entre todas as maquinas e o host pc. Vamos utilizalo para dumpar o trafego de rede que chega a interface de rede de cada pc. Para o fazer, vamos comecar por criar essa pasta no host pc.
+
+```bash
+# Dentro da pasta que contem lab.conf: 
+mkdir shared
+```
+
+2. Inicie o laboratorio:
+```bash
+lstart
+```
+
+3. Execute o comando [tcpdump][7] nas maquinas respetivas para comecar a guardar o trafego que chega a interface eth0 dentro dos ficheiros respetivos na pasta shared:
+```bash
+# pc1:
+tcpdump -s 0 -i eth0 -w /shared/pc1.pcap &
+
+# pc2:
+tcpdump -s 0 -i eth0 -w /shared/pc2.pcap &
+
+```
+
+4. Na maquina pc1 pingue a maquina pc2 e de seguida pingue um endereco que nao existe:
+```bash
+# pc1:
+ping -c 1 1.2.0.2
+ping -c 1 1.2.0.3
+```
+
+5. Pare os laboratorios, executando no host pc `lclean`.
+
+6. Corra o programa [wireshark][8] e abra um dos pacotes para observar o conteudo do pingue entre o pc1 e pc2 do ponto de vista dos pacotes que chegam ao pc1 e ao pc2 quando estes estao ligados no mesmo collision domain do kathara. Que componente fisico de rede teria o mesmo comportamento que o kathara simula num collision domain?
 
 
 ## Referências
@@ -42,9 +115,13 @@ e seguir os passos indicados em
 
 -   Docker documentation, [https://docs.docker.com/][6]
 
-  [1]: media/tecnico.jpeg
-  [2]: media/topologia-de-rede.png 
+-   man ip
+
+-   man tcpdump, [https://www.tcpdump.org/manpages/tcpdump.1.html][7]
+
+-  Wireshark, [https://www.wireshark.org/][8]
+
   [3]: https://github.com/KatharaFramework/Kathara/wiki
-  [4]: http://www.cyberciti.biz/faq/howto-linux-configuring-default-route-with-ipcommand/
-  [5]: http://www.tecmint.com/ip-command-examples/
   [6]: https://docs.docker.com/
+  [7]: https://www.tcpdump.org/manpages/tcpdump.1.html
+  [8]: https://www.wireshark.org/
