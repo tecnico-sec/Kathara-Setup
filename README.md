@@ -24,7 +24,7 @@ Este vídeo faz uma apresentação do Kathará:
 O Kathará está instalado nos computadores do laboratório, em Ubuntu GNU/Linux.
 Para aceder aos computadores do laboratório use o *username* "seed" e a *password* "dees".
 
-Para instalar o Kathará no seu PC, faca o *download* da versao *"Latest Stable Release"* de
+Para instalar o Kathará no seu PC, faca o *download* da versão *"Latest Stable Release"* de
 
 > <https://www.kathara.org/#download>
 
@@ -34,22 +34,22 @@ e siga os passos indicados em
 
 ## Teste básico
 
-O objetivo deste teste basico e verificar que o kathara corretamente instalado.
+O objetivo deste teste básico e verificar que o Kathará está corretamente instalado.
 Vamos criar uma rede em que temos 2 computadores fisicamente ligados ao mesmo *switch* e confirmar que se conseguem pingar mutuamente.
 
-1. Clone este repositório git para a sua maquina
+1. Clone este repositório git para a sua máquina
 
 ```bash
-git clone 'git@github.com:tecnico-sec/Kathara-Route.git'
+git clone 'git@github.com:tecnico-sec/Kathara-Setup.git'
 ````
 
 2.  Observe o conteúdo do ficheiro *lab.conf* de modo a compreender porque é gerada a rede entre os 2 pcs.
 
-3.  Execute o laboratório mudando para a directoria que contém o ficheiro *lab.conf* e executando o comando `lstart` (`kathara lstart`). 
+3.  Execute o laboratório mudando para o directório que contém o ficheiro *lab.conf* e executando o comando `lstart` (`kathara lstart`). 
 Observe o arranque dos dois docker containers.
-Verifique que os scripts bash pc1.startup e pc2.startup sao executado apos o arranque das respetivas maquinas.
+Verifique que os scripts bash pc1.startup e pc2.startup são executado após o arranque das respetivas máquinas.
 
-4.  Em cada máquina, obtenha o seu endereco ip dentro da rede 1.2.0.0/24.
+4.  Em cada máquina, obtenha o seu endereço ip dentro da rede 1.2.0.0/24.
 
 ```bash
 ip addr
@@ -69,26 +69,26 @@ ping 1.2.0.2
 # ctrl+c para parar o comando 
 ```
 
-6. Feche o laboratorio, executando  ocomando `lclean`. 
-Isto vai apagar o conteudo das máquinas e parar de corre-las.
+6. Feche o laboratório, executando o comando `lclean` (`kathara lclean`).
+Isto vai apagar o conteúdo das máquinas e parar de corre-las.
 
 # Guardar e observar o tráfego entre máquinas
 
 Vamos agora proceder a guardar o tráfego de um ping entre máquinas do ponto de vista dos pacotes que chegam a interface de rede de cada máquina e posteriormente observa-lo no host pc.
 
-1. Na pasta onde esta o ficheiro lab.conf, a pasta shared e uma pasta persistente partilhada entre todas as maquinas e o host pc. Vamos utilizalo para dumpar o trafego de rede que chega a interface de rede de cada pc. Para o fazer, vamos comecar por criar essa pasta no host pc.
+1. Na pasta onde esta o ficheiro lab.conf, a pasta shared e uma pasta persistente partilhada entre todas as maquinas e o host pc. Vamos utilizá-lo para dumpar o trafego de rede que chega a interface de rede de cada pc. Para o fazer, vamos começar por criar essa pasta no host pc.
 
 ```bash
 # Dentro da pasta que contem lab.conf: 
 mkdir shared
 ```
 
-2. Inicie o laboratorio:
+2. Inicie o laboratório:
 ```bash
 lstart
 ```
 
-3. Execute o comando [tcpdump][7] nas maquinas respetivas para comecar a guardar o trafego que chega a interface eth0 dentro dos ficheiros respetivos na pasta shared:
+3. Execute o comando [tcpdump][7] nas máquinas respetivas para começar a guardar o trafego que chega a interface eth0 dentro dos ficheiros respetivos na pasta shared:
 ```bash
 # pc1:
 tcpdump -s 0 -i eth0 -w /shared/pc1.pcap &
@@ -98,7 +98,7 @@ tcpdump -s 0 -i eth0 -w /shared/pc2.pcap &
 
 ```
 
-4. Na maquina pc1 pingue a maquina pc2 e de seguida pingue um endereco que nao existe:
+4. Na maquina pc1 pingue a maquina pc2 e de seguida pingue um endereço que não existe:
 ```bash
 # pc1:
 ping -c 1 1.2.0.2
@@ -107,7 +107,7 @@ ping -c 1 1.2.0.3
 
 5. Pare os laboratórios, executando no host pc `lclean`.
 
-6. Corra o programa [wireshark][8] e abra um dos pacotes para observar o conteudo do pingue entre o pc1 e pc2 do ponto de vista dos pacotes que chegam ao pc1 e ao pc2 quando estes estao ligados no mesmo collision domain do kathara. Que componente fisico de rede teria o mesmo comportamento que o kathara simula num collision domain?
+6. Corra o programa [wireshark][8] e abra um dos pacotes para observar o conteúdo do ping entre o pc1 e pc2 do ponto de vista dos pacotes que chegam ao pc1 e ao pc2 quando estes estão ligados no mesmo collision domain do Kathará. Que componente físico de rede teria o mesmo comportamento que o Kathará simula num collision domain?
 
 
 ## Referências
