@@ -106,7 +106,7 @@ ping -c 1 1.2.0.2
 ping -c 1 1.2.0.3
 ```
 
-5. Pare os laboratórios, executando no host pc `lclean`.
+5. Pare os laboratórios, executando no host pc `lclean`. Espere um pouco para garantir que os ficheiros `pc1.pcap` e `pc2.pcap` ficam gravados (pode ver se têm mais de 0 bytes na pasta `shared`).
 
 6. Corra o programa [*Wireshark*][8] e abra um dos pacotes para observar o conteúdo do ping entre o pc1 e pc2 do ponto de vista dos pacotes que chegam ao pc1 e ao pc2 quando estes estão ligados no mesmo domínio de colisão do *Kathará*. 
 
