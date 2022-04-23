@@ -92,10 +92,10 @@ lstart
 3. Execute o comando [*tcpdump*][7] nas máquinas respetivas para começar a guardar o tráfego que chega à interface `eth0` dentro dos ficheiros respetivos na pasta *shared*:
 ```bash
 # pc1:
-tcpdump -s 0 -i eth0 -w /shared/pc1.pcap &
+tcpdump -s 0 -i eth0 -U -w /shared/pc1.pcap &
 
 # pc2:
-tcpdump -s 0 -i eth0 -w /shared/pc2.pcap &
+tcpdump -s 0 -i eth0 -U -w /shared/pc2.pcap &
 
 ```
 
